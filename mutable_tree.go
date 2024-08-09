@@ -461,23 +461,23 @@ func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
 		return latestVersion, fmt.Errorf("wanted to load target %d but only found up to %d", targetVersion, latestVersion)
 	}
 
-	if firstVersion == 0 {
-		if targetVersion <= 0 {
-			if !tree.skipFastStorageUpgrade {
-				tree.mtx.Lock()
-				defer tree.mtx.Unlock()
-				_, err := tree.enableFastStorageAndCommitIfNotEnabled()
-				return 0, err
-			}
-			return 0, nil
-		}
-		return 0, fmt.Errorf("no versions found while trying to load %v", targetVersion)
-	}
+	// if firstVersion == 0 {
+	// 	if targetVersion <= 0 {
+	// 		if !tree.skipFastStorageUpgrade {
+	// 			tree.mtx.Lock()
+	// 			defer tree.mtx.Unlock()
+	// 			_, err := tree.enableFastStorageAndCommitIfNotEnabled()
+	// 			return 0, err
+	// 		}
+	// 		return 0, nil
+	// 	}
+	// 	return 0, fmt.Errorf("no versions found while trying to load %v", targetVersion)
+	// }
 
-	if targetVersion <= 0 {
-		targetVersion = latestVersion
-	}
-	if !tree.VersionExists(targetVersion) {
+	// if targetVersion <= 0 {
+	// 	targetVersion = latestVersion
+	// }
+	if targetVersion != 0 && !tree.VersionExists(targetVersion) {
 		return 0, ErrVersionDoesNotExist
 	}
 	rootNodeKey, err := tree.ndb.GetRoot(targetVersion)
