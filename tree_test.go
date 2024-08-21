@@ -1936,6 +1936,9 @@ func TestWorkingHashWithInitialVersion(t *testing.T) {
 	_, err = tree.Set([]byte("key1"), []byte("value1"))
 	require.NoError(t, err)
 
+	// WorkingHash sets the hashes in the nodes, SaveVersion doesn't recompute it.
+	// This test ensures WorkingHash and SaveVersion are consistent, using the
+	// same version number.
 	workingHash := tree.WorkingHash()
 	commitHash, _, err := tree.SaveVersion()
 	require.NoError(t, err)
@@ -1952,5 +1955,5 @@ func TestWorkingHashWithInitialVersion(t *testing.T) {
 
 	commitHash1, _, err := tree.SaveVersion()
 	require.NoError(t, err)
-	require.Equal(t, commitHash1, commitHash)
+	assert.Equal(t, hex.EncodeToString(commitHash1), hex.EncodeToString(commitHash))
 }
