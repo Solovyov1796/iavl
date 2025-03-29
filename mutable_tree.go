@@ -435,6 +435,7 @@ func (tree *MutableTree) Load() (int64, error) {
 
 // Returns the version number of the specific version found
 func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
+
 	tree.logger.Info("LoadVersion", "targetVersion", targetVersion)
 	firstVersion, err := tree.ndb.getFirstVersion()
 	if err != nil {
@@ -442,6 +443,8 @@ func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
 	}
 	tree.logger.Info("LoadVersion", "firstVersion", firstVersion)
 	if targetVersion == 0 && firstVersion == 1 {
+		tree.logger.Info("LoadVersion", "1, VersionExists: "+fmt.Sprint(targetVersion), !tree.VersionExists(targetVersion))
+		tree.logger.Info("LoadVersion", "2, VersionExists: "+fmt.Sprint(targetVersion-1), !tree.VersionExists(targetVersion-1))
 		tree.ndb.resetFirstVersion(int64(0))
 		firstVersion = int64(0)
 	}
