@@ -435,6 +435,7 @@ func (tree *MutableTree) Load() (int64, error) {
 
 // Returns the version number of the specific version found
 func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
+	tree.ndb.resetFirstVersion(int64(0))
 	firstVersion, err := tree.ndb.getFirstVersion()
 	if err != nil {
 		return 0, err
