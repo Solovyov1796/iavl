@@ -441,8 +441,10 @@ func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
 		return 0, err
 	}
 	tree.logger.Info("LoadVersion", "firstVersion", firstVersion)
-	tree.ndb.resetFirstVersion(int64(0))
-	firstVersion = int64(0)
+	if targetVersion == 0 && firstVersion == 1 {
+		tree.ndb.resetFirstVersion(int64(0))
+		firstVersion = int64(0)
+	}
 
 	if firstVersion > 0 && firstVersion < int64(tree.ndb.opts.InitialVersion) {
 		return firstVersion, fmt.Errorf("initial version set to %v, but found earlier version %v",
