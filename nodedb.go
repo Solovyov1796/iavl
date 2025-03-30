@@ -605,6 +605,7 @@ func (ndb *nodeDB) startPruning() {
 
 // DeleteVersionsTo deletes the oldest versions up to the given version from disk.
 func (ndb *nodeDB) DeleteVersionsTo(toVersion int64) error {
+	ndb.logger.Info("Deleting versions to", "toVersion", toVersion)
 	if !ndb.opts.AsyncPruning {
 		return ndb.deleteVersionsTo(toVersion)
 	}
@@ -620,7 +621,7 @@ func (ndb *nodeDB) deleteVersionsTo(toVersion int64) error {
 	if err != nil {
 		return err
 	}
-
+	ndb.logger.Info("deleteVersionsTo", "legacyLatestVersion", legacyLatestVersion)
 	// If the legacy version is greater than the toVersion, we don't need to delete anything.
 	// It will delete the legacy versions at once.
 	if legacyLatestVersion > toVersion {
@@ -661,6 +662,7 @@ func (ndb *nodeDB) deleteVersionsTo(toVersion int64) error {
 	}
 
 	for version := first; version <= toVersion; version++ {
+		ndb.logger.Info("deleteVersion", "version", version)
 		if err := ndb.deleteVersion(version); err != nil {
 			return err
 		}
