@@ -442,11 +442,11 @@ func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
 		return 0, err
 	}
 	tree.logger.Info("LoadVersion", "firstVersion", firstVersion)
-	if targetVersion == 0 && firstVersion == 1 {
+	if int64(tree.ndb.opts.InitialVersion) == 2880000 && targetVersion == 0 && firstVersion == 1 {
 		tree.logger.Info("LoadVersion", "1, VersionExists: "+fmt.Sprint(targetVersion), !tree.VersionExists(targetVersion))
 		tree.logger.Info("LoadVersion", "2, VersionExists: "+fmt.Sprint(targetVersion-1), !tree.VersionExists(targetVersion-1))
-		tree.ndb.resetFirstVersion(int64(2879998))
-		firstVersion = int64(2879998)
+		tree.ndb.resetFirstVersion(int64(2880000))
+		firstVersion = int64(2880000)
 		set = true
 	}
 
@@ -460,15 +460,15 @@ func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
 		return 0, err
 	}
 	tree.logger.Info("LoadVersion", "latestVersion", latestVersion)
-	if targetVersion == 0 && latestVersion == 1 {
+	if int64(tree.ndb.opts.InitialVersion) == 2880000 && targetVersion == 0 && latestVersion == 1 {
 		latestVersion = int64(2800000)
 		tree.ndb.resetLatestVersion(latestVersion)
 		set = true
 	}
 
-	if set {
-		targetVersion = int64(2879999)
-	}
+	// if int64(tree.ndb.opts.InitialVersion) == 2880000 && set {
+	// 	targetVersion = int64(2879999)
+	// }
 	if firstVersion > 0 && firstVersion < int64(tree.ndb.opts.InitialVersion) {
 		return latestVersion, fmt.Errorf("initial version set to %v, but found earlier version %v",
 			tree.ndb.opts.InitialVersion, firstVersion)
